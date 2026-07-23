@@ -31,7 +31,6 @@ import {
   preloadSfx,
   setAudioSettings,
   setDangerAmbience,
-  stopMusic,
   unlockAudio,
 } from './audio'
 import {
