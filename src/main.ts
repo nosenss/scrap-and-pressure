@@ -45,19 +45,7 @@ import {
 } from './feel'
 import './style.css'
 import { mountIndustrialWarp } from './bg-shader'
-import {
-  initAnalytics,
-  trackGameOver,
-  trackOverload,
-  trackPlace,
-  trackPowerOn,
-  trackPress,
-  trackRunStart,
-  trackTutorialDone,
-  trackUpgrade,
-} from './analytics'
 import { assetUrl } from './assets'
-import { installPromoApi } from './promo-api'
 
 type Phase = 'title' | 'tutorial' | 'play'
 
@@ -268,7 +256,6 @@ function applyDangerVisual(n: number): void {
 
 function flashOverflow(n: number): void {
   playOverloadAlarm()
-  trackOverload(n)
   el.overflowFlashText.textContent = `Item jammed · stress ${n} / 3`
   el.overflowFlash.classList.remove('hidden')
   el.pressMachine.classList.add('is-overflow')
@@ -362,7 +349,6 @@ function completeTraining(): void {
   hideCoach()
   el.trainBanner.classList.remove('hidden')
   playSfx('alloy', { volume: 0.7 })
-  trackTutorialDone()
   window.setTimeout(() => {
     el.trainBanner.classList.add('hidden')
     setPhase('play')
@@ -402,7 +388,6 @@ function startRun(asTutorial: boolean): void {
   if (el.playerNickname) el.playerNickname.value = ''
   setPhase(asTutorial ? 'tutorial' : 'play')
   playGameMusic()
-  trackRunStart(asTutorial)
   renderAll()
   updateCoach()
 }
@@ -561,7 +546,6 @@ function tryPlace(ox: number, oy: number): void {
     rot: p.rot,
   })
   playPlace(p.material === 'metal')
-  trackPlace()
   run.hover = null
   placeOrigin = null
   ghostValid = false
@@ -657,7 +641,6 @@ function pickDraft(item: ShopItem): void {
 
   persist()
   playSfx('buy', { volume: 0.7 })
-  trackUpgrade(item.id)
   if (meta.gridSize !== prevSize && !run.ended) {
     const next = emptyGrid(meta.gridSize)
     for (let y = 0; y < run.size; y++) {
@@ -708,7 +691,6 @@ function doPress(): void {
 
   pressing = true
   playPress(s.alloyMult, { value: s.value, density: s.density })
-  trackPress(s.value)
   el.pressMachine.classList.add('is-pressing')
   el.btnPress.classList.add('is-slam')
   shakeStation(el.station, 200)
@@ -764,7 +746,6 @@ function endRun(): void {
   hideCoach()
   renderHud()
   playMenuMusic()
-  trackGameOver(run.runScore)
 }
 
 function armQueueFromTutorial(): void {
@@ -1327,7 +1308,6 @@ window.addEventListener('resize', () => {
 
 /** Letterbox-scale the 1280×800 virtual frame to the viewport. */
 function resizeGame(): void {
-  if ((window as unknown as { __promoLockScale?: boolean }).__promoLockScale) return
   const wrapper = document.getElementById('game-wrapper')
   if (!wrapper) return
   const targetWidth = 1280
@@ -1389,7 +1369,6 @@ function runBootSequence(): void {
 
   powerBtn.addEventListener('click', () => {
     void unlockAudio()
-    void initAnalytics().then(() => trackPowerOn())
     playSfx('start', { volume: 0.55 })
     playMenuMusic()
     bootOverlay?.classList.add('fade-out')
@@ -1406,62 +1385,3 @@ void preloadSfx()
 setPhase('title')
 renderHud()
 resizeGame()
-/** Promo capture API — Playwright uses ?promo=1 */
-if (new URLSearchParams(location.search).has('promo')) {
-  installPromoApi({
-    el: {
-      title: el.title,
-      game: el.game,
-      draft: el.draft,
-      draftCards: el.draftCards,
-      leaderboard: el.leaderboard,
-      gameover: el.gameover,
-      toast: el.toast,
-      btnPress: el.btnPress,
-    },
-    getMeta: () => meta,
-    setMeta: (m) => {
-      meta = m
-    },
-    getRun: () => run,
-    setRun: (r) => {
-      run = r
-    },
-    setPlaceOrigin: (o) => {
-      placeOrigin = o
-    },
-    setGhostValid: (v) => {
-      ghostValid = v
-    },
-    setPaused: (v) => {
-      paused = v
-    },
-    setQueueArmed: (v) => {
-      queueArmed = v
-    },
-    setPhase,
-    startRun,
-    persist,
-    renderAll,
-    openLb,
-    doPress,
-    rotateCurrent,
-    tryPlace,
-    pickDraft,
-    showToast,
-    setAudioMuted: (muted) => {
-      setAudioSettings({ muted })
-      syncAudioUi()
-    },
-    stopMusic,
-    DEFAULT_META,
-  })
-  window.setTimeout(() => {
-    document.getElementById('boot-screen')?.remove()
-    document.body.classList.add('promo-capture')
-    const promo = (window as unknown as { __PROMO?: { mute: () => void; lockScale: () => void } })
-      .__PROMO
-    promo?.mute()
-    promo?.lockScale()
-  }, 50)
-}

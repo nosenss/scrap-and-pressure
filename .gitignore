@@ -4,15 +4,24 @@ node_modules/
 
 # Build
 dist/
-trailer/out/
 *.zip
 scrap-and-pressure-itch.zip
+
+# Local / private tooling (not in public repo)
+promo/
+trailer/
+scripts/promo-capture.mjs
+scripts/trailer-capture.mjs
+src/analytics.ts
+src/promo-api.ts
+public/itch-analytics.js
+public/analytics.config.json
+public/analytics.config.example.json
 
 # Secrets / local config
 .env
 .env.*
 !.env.example
-public/analytics.config.json
 
 # Logs / OS
 *.log
@@ -23,6 +32,6 @@ public/analytics.config.json
 *.tmp
 .cursor/
 
-# Local agent notes (optional)
+# Local agent notes
 .agents/
 kniga-zhalob/

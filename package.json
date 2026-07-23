@@ -7,12 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "zip:itch": "npm run build && rm -f scrap-and-pressure-itch.zip && cd dist && zip -r -X ../scrap-and-pressure-itch.zip . && cd .. && ls -lh scrap-and-pressure-itch.zip",
-    "promo:capture": "node scripts/promo-capture.mjs",
-    "trailer:capture": "node scripts/trailer-capture.mjs"
+    "zip:itch": "npm run build && rm -f scrap-and-pressure-itch.zip && cd dist && zip -r -X ../scrap-and-pressure-itch.zip . && cd .. && ls -lh scrap-and-pressure-itch.zip"
   },
   "devDependencies": {
-    "playwright-core": "^1.61.1",
     "typescript": "~5.7.2",
     "vite": "^5.4.11"
   },
