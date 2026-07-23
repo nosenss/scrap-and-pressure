@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compactor — Cinematic Pixel Preview</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #0a0c12; overflow: hidden; }
+      canvas { display: block; width: 100%; height: 100%; }
+      .hud {
+        position: fixed; left: 16px; bottom: 16px; z-index: 2;
+        font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+        color: #e4e0d2; background: rgba(10, 12, 18, 0.72);
+        border: 1px solid #3d4258; padding: 12px 14px; max-width: 320px;
+      }
+      .hud strong { color: #e8903a; }
+      .hud kbd {
+        display: inline-block; padding: 2px 6px; border: 1px solid #5a6178;
+        background: #1a1c2c; border-radius: 3px; font-size: 11px;
+      }
+      button {
+        margin-top: 8px; font: inherit; cursor: pointer;
+        color: #1a1c2c; background: #e8903a; border: 0; padding: 8px 12px;
+      }
+      button:active { transform: translateY(1px); }
+    </style>
+  </head>
+  <body>
+    <div class="hud">
+      <div><strong>2.5D Cinematic Pixel</strong> preview</div>
+      <div>Стиль REPLACED / The Last Night — материалы, свет, bloom, пар.</div>
+      <div style="margin-top:6px"><kbd>Space</kbd> / кнопка — PRESS</div>
+      <button id="press" type="button">PRESS</button>
+    </div>
+    <script type="module" src="/src/visual/demo.js"></script>
+  </body>
+</html>

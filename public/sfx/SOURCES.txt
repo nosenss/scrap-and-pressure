@@ -1,0 +1,14 @@
+Compactor SFX — sourced from Sonniss.com GDC 2024 Game Audio Bundle (Part 1of9 / Filelist Part 8).
+Royalty-free for personal/commercial use per bundle license (no attribution required).
+
+press.ogg       BluezoneCorp — Steampunk Machines — heavy_impact_011
+lever.ogg       BluezoneCorp — Industrial Lever Switch — 039 (trim)
+alloy.ogg       CB Sounddesign — Activation 2 — UI Click 33 (MUTED in code)
+overflow.ogg    copy of press.ogg (MUTED in code; was futuristic alert_003)
+place_soft.ogg  Stone Impact 015 + quiet Tiny Gears click_003 (clearer soft set-down)
+rotate.ogg      BluezoneCorp — Tiny Gears — click_003
+deny.ogg        copy of rotate.ogg (MUTED; was Qantum UI Noisy_Impact — the sci-fi "door")
+ui.ogg          CB Sounddesign — Activation 2 — UI Click 33
+buy.ogg         copy of rotate.ogg (MUTED; was futuristic beep)
+gameover.ogg    BluezoneCorp — Modern Cinematic Impact — percussion_009 (trim)
+start.ogg       BluezoneCorp — Industrial Lever Switch — small_003

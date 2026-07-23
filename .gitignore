@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build
+dist/
+trailer/out/
+*.zip
+scrap-and-pressure-itch.zip
+
+# Secrets / local config
+.env
+.env.*
+!.env.example
+public/analytics.config.json
+
+# Logs / OS
+*.log
+.DS_Store
+
+# Editor / engine
+.godot/
+*.tmp
+.cursor/
+
+# Local agent notes (optional)
+.agents/
+kniga-zhalob/

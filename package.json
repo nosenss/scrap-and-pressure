@@ -1,0 +1,23 @@
+{
+  "name": "bet-survivors",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "zip:itch": "npm run build && rm -f scrap-and-pressure-itch.zip && cd dist && zip -r -X ../scrap-and-pressure-itch.zip . && cd .. && ls -lh scrap-and-pressure-itch.zip",
+    "promo:capture": "node scripts/promo-capture.mjs",
+    "trailer:capture": "node scripts/trailer-capture.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.61.1",
+    "typescript": "~5.7.2",
+    "vite": "^5.4.11"
+  },
+  "dependencies": {
+    "@paper-design/shaders": "^0.0.77",
+    "three": "^0.172.0"
+  }
+}

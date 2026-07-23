@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scrap &amp; Pressure</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Загрузочный экран BOOT / SPLASH SCREEN -->
+    <div id="boot-screen" class="boot-overlay">
+      <div class="boot-terminal">
+        <div class="boot-header">SCRAPYARD OS v4.1 (C) 1984 HEAVY HYDRAULICS CORP.</div>
+        <div id="boot-log" class="boot-log-text"></div>
+        <button id="btn-power-on" type="button" class="boot-power-btn hidden">
+          CLICK TO POWER ON STATION
+        </button>
+      </div>
+    </div>
+
+    <!-- Industrial Warp backdrop (behind cabin) -->
+    <div
+      id="bg-shader"
+      aria-hidden="true"
+      style="position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; opacity: 0.45;"
+    ></div>
+
+    <div id="crt" class="crt" aria-hidden="true"></div>
+
+    <div id="app-root">
+      <div id="game-wrapper">
+        <!-- TITLE -->
+        <div id="title" class="screen">
+          <div class="title-card">
+            <!-- Мелкая сухая марка сверху -->
+            <div class="station-tag">SCRAPYARD OS • STATION #04</div>
+
+            <!-- Главный логотип -->
+            <h1 class="main-title">SCRAP &amp; PRESSURE</h1>
+
+            <!-- Рандомная цитата -->
+            <div class="flavor-text" id="flavor-quote">
+              "WARNING: DO NOT CRUSH EXPLOSIVES"
+            </div>
+
+            <!-- Старт -->
+            <div class="start-prompt">
+              [ SPACE ] — START RUN
+            </div>
+
+            <!-- Кнопка Лидерборда (чистый текст) -->
+            <button id="btn-start-records" type="button" class="pixel-button">
+              LEADERBOARD
+            </button>
+
+            <!-- Чистая текстовая легенда управления без эмодзи -->
+            <div class="control-legend">
+              <span>[ L-CLICK ] PLACE</span>
+              <span>[ RMB / SCROLL ] ROTATE</span>
+              <span>[ SPACE ] PRESS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GAME -->
+        <div id="game" class="pixel-root cabin hidden">
+          <div class="station" id="station">
+            <header class="nameplate stats-header">
+              <div class="brand">
+                <p class="station-id">SCRAP STATION #04</p>
+                <h1 class="game-title">SCRAP &amp; PRESSURE</h1>
+              </div>
+              <div class="meters top-bar">
+                <div class="meter stat-card">
+                  <span class="meter-label label stat-label">BALANCE</span>
+                  <span id="credits" class="meter-value value balance-value neon-good">$ 0</span>
+                </div>
+                <div class="meter stat-card">
+                  <span class="meter-label label stat-label">RUN</span>
+                  <span id="run-score" class="meter-value value neon-good">$ 0</span>
+                </div>
+                <div class="meter stat-card">
+                  <span class="meter-label label stat-label">BEST</span>
+                  <span id="best-run" class="meter-value value neon-good">$ 0</span>
+                </div>
+              </div>
+              <div class="header-btns">
+                <button id="btn-records" type="button" class="stat-card icon-card records-button" aria-label="Leaderboard" title="Leaderboard">
+                  🏆
+                </button>
+              </div>
+            </header>
+
+            <main class="bay">
+              <aside class="rail queue-rail" id="queue-panel">
+                <div class="rail-title">QUEUE</div>
+                <div id="queue" class="queue"></div>
+                <button id="btn-rotate" type="button" class="px-btn wide">ROTATE (RMB / Scroll)</button>
+              </aside>
+
+              <section class="press-machine" id="press-machine">
+                <div class="hazard-stripe" aria-hidden="true"></div>
+
+                <div class="chamber-wrap">
+                  <div class="steam steam-l" aria-hidden="true"></div>
+                  <div class="steam steam-r" aria-hidden="true"></div>
+
+                  <div class="chamber" id="chamber">
+                    <div class="ram" id="ram" aria-hidden="true">
+                      <div class="ram-plate"></div>
+                      <div class="ram-shaft"></div>
+                    </div>
+                    <div class="chamber-frame" id="chamber-frame">
+                      <div class="glass" id="glass">
+                        <div class="crack" id="crack" aria-hidden="true"></div>
+                        <div class="grid-stack" id="grid-container">
+                          <div id="grid" class="grid"></div>
+                          <div id="objects" class="objects" aria-hidden="true"></div>
+                          <div id="ghost-obj" class="ghost-obj hidden" aria-hidden="true"></div>
+                          <div id="hint-layer" class="hint-layer" aria-hidden="true"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <canvas id="sparks" class="sparks" width="320" height="320" aria-hidden="true"></canvas>
+                  </div>
+
+                  <aside class="eject-tray" id="eject-tray" aria-label="Briquette tray">
+                    <div class="tray-label">TRAY</div>
+                    <div id="briquette" class="briquette hidden"></div>
+                  </aside>
+                </div>
+
+                <div class="block-readout">
+                  <span class="meter-label">CURRENT YIELD</span>
+                  <div class="block-line">
+                    <strong id="prev-value" class="neon-yield yield-value">$ 0</strong>
+                    <span id="value-delta" class="value-delta"></span>
+                  </div>
+                  <span class="value-sub">Alloy <span id="prev-alloy">×1.00</span> · <span id="density-label">Loose</span></span>
+                </div>
+
+                <button id="btn-press" type="button" class="press-btn neon-press" disabled aria-label="Press">
+                  <span class="press-label">PRESS</span>
+                  <span class="press-hint">SPACE</span>
+                </button>
+
+                <p id="toast" class="toast" aria-live="polite"></p>
+              </section>
+
+              <aside class="rail gauges-rail" id="gauges-panel">
+                <div class="manometer" id="manometer">
+                  <div class="mano-face">
+                    <div class="mano-arc" aria-hidden="true"></div>
+                    <div class="mano-needle" id="mano-needle"></div>
+                    <div class="mano-hub"></div>
+                    <strong id="mano-pct">0%</strong>
+                  </div>
+                  <div class="rail-title">DENSITY</div>
+                  <p id="mano-status" class="mano-status">Loose</p>
+                </div>
+
+                <div class="danger-panel" id="danger-panel">
+                  <div class="rail-title">OVERLOAD STRESS</div>
+                  <div id="overflow" class="danger-pips" aria-label="Overload stress"></div>
+                  <p id="overflow-text" class="danger-text">NORMAL</p>
+                  <div class="beacon" id="beacon" aria-hidden="true"></div>
+                </div>
+              </aside>
+            </main>
+
+            <!-- Settings: bottom-left inside 1280x800 frame -->
+            <div class="settings-wrap">
+              <button id="btn-settings" type="button">SETTINGS</button>
+              <div id="settings-popup" class="hidden">
+                <div class="settings-head">
+                  <span>AUDIO</span>
+                  <button id="btn-settings-close" type="button" class="px-btn">X</button>
+                </div>
+                <label class="audio-row">
+                  <span>Master Volume</span>
+                  <input id="vol-master" type="range" min="0" max="100" value="85" />
+                </label>
+                <label class="audio-row">
+                  <span>Music Volume</span>
+                  <input id="vol-music" type="range" min="0" max="100" value="70" />
+                </label>
+                <label class="audio-row">
+                  <span>SFX Volume</span>
+                  <input id="vol-sfx" type="range" min="0" max="100" value="100" />
+                </label>
+                <label class="audio-row mute-row">
+                  <span>Mute</span>
+                  <input id="vol-mute" type="checkbox" />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coach overlay (run #1) -->
+    <div id="coach" class="coach hidden" aria-live="polite">
+      <div id="coach-arrow" class="coach-arrow">▼</div>
+      <div id="coach-bubble" class="coach-bubble">
+        <p id="coach-text">1. Select item from Queue</p>
+      </div>
+    </div>
+
+    <div id="train-banner" class="train-banner hidden">
+      <strong>TRAINING COMPLETE</strong>
+      <span>GO FOR HIGH SCORE!</span>
+    </div>
+
+    <span id="best-block" class="hidden">0</span>
+    <span id="prev-density" class="hidden">0%</span>
+    <span id="prev-base" class="hidden">0</span>
+    <span id="prev-penalty" class="hidden">0</span>
+    <div id="legend" class="hidden"></div>
+
+    <!-- Legacy shop nodes kept hidden for migration; draft replaces shop UX -->
+    <div id="shop" class="hidden" aria-hidden="true">
+      <button id="btn-shop" type="button" tabindex="-1"></button>
+      <button id="btn-shop-close" type="button" tabindex="-1"></button>
+      <strong id="shop-credits">0</strong>
+      <div id="shop-list"></div>
+    </div>
+
+    <!-- Upgrade draft -->
+    <div id="draft" class="draft hidden" role="dialog" aria-modal="true">
+      <div class="draft-sheet">
+        <p class="draft-eyebrow">UPGRADE AVAILABLE!</p>
+        <h2>Pick one</h2>
+        <div id="draft-cards" class="draft-cards"></div>
+      </div>
+    </div>
+
+    <div id="leaderboard" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2>RECORDS</h2>
+          <button id="btn-lb-close" type="button" class="px-btn">X</button>
+        </div>
+        <ol id="lb-list" class="lb-list"></ol>
+        <p class="modal-sub" id="lb-empty">Empty — finish a run.</p>
+      </div>
+    </div>
+
+    <div id="gameover" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modal-card center alarm">
+        <h2>SCRAP STATION SHUTDOWN</h2>
+        <p class="modal-sub">FINAL SCORE</p>
+        <p class="big" id="over-score">$ 0</p>
+        <p>Best: <strong id="over-best">$ 0</strong></p>
+        <p id="over-new" class="good hidden">NEW RECORD</p>
+        <label class="nick-field" for="player-nickname">CALLSIGN</label>
+        <input
+          id="player-nickname"
+          type="text"
+          placeholder="OPERATOR"
+          maxlength="10"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <div class="over-actions">
+          <button id="btn-save-score" type="button" class="px-btn wide">SUBMIT &amp; RESTART</button>
+          <button id="btn-over-menu" type="button" class="px-btn wide">MAIN MENU</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="overflow-flash" class="overflow-flash hidden">
+      <div class="overflow-flash-card">
+        <h2>OVERLOAD!</h2>
+        <p id="overflow-flash-text">Item jammed · stress 1 / 3</p>
+      </div>
+    </div>
+
+    <div id="fly-layer" class="fly-layer" aria-hidden="true"></div>
+
+    <!-- keep tutorial shell for API compat (coach replaces visible card) -->
+    <div id="tutorial" class="hidden" aria-hidden="true">
+      <span id="tut-step"></span>
+      <span id="tut-title"></span>
+      <span id="tut-body"></span>
+      <span id="tut-action"></span>
+      <img id="tut-icon" alt="" />
+      <button id="btn-tut-skip" type="button"></button>
+    </div>
+
+    <!-- Itch Analytics SDK (config: analytics.config.json) -->
+    <script src="./itch-analytics.js"></script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
